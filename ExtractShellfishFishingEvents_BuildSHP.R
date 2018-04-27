@@ -24,7 +24,7 @@
 rm(list=ls())
 
 getwd()
-setwd("C:/Users/daviessa/Documents/R/MY_PROJECTS/SoG Sponge Reef 2018")
+setwd("~/R/MY_PROJECTS/SoG_Sponge_Reef_2018")
 
 Sys.getenv("R_ARCH")   
 # "/i386" 32 bit R --- which is necessary to grab data from MS Access database
@@ -163,70 +163,3 @@ for (i in 1:nrow(fisheries)){
 }
 
 odbcCloseAll( )
-cat("Moving on the Groundfish data ...\n")
-
-
-######################################
-#### Clip with Reef SHP in ArcMap ####
-######################################
-# 
-# 
-# ######################################
-# #### Summarize FE on Sponge Reef  ####
-# ######################################
-# 
-# # Read in data
-# crab <- readOGR("C:/Users/daviessa/Documents/ArcGIS/SoG_ReefFish", "Crab_clip")
-# crab <- crab@data
-# summary(crab)
-# 
-# prawn <- readOGR("C:/Users/daviessa/Documents/ArcGIS/SoG_ReefFish", "Prawn_clip")
-# prawn <- prawn@data
-# summary(prawn)
-# df <- prawn
-# prawn <- df
-# 
-# # Remove records earlier than 2000
-# crab <- filter( crab, year>2000 )
-# prawn$year <- as.character(prawn$year)
-# prawn$year <- as.integer(prawn$year)
-# prawn <- filter( prawn, year>2000 )
-# 
-# write.csv(crab, "F:/SPERA/SoG sponge manuscript/Data/FishingEvents/crab_reef.csv")
-# 
-# write.csv(prawn, "F:/SPERA/SoG sponge manuscript/Data/FishingEvents/prawn_reef.csv")
-# 
-# dtc <- data.table(crab, key="year")
-# dtc[,length(ID),length(cfv), by=key(dt)]
-# 
-# dt <- data.table(prawn, key="year")
-# dt[,.N,by=key(dt)]
-# 
-# crab %>% 
-#   group_by(year) %>% 
-#   mean(crab$soak_tm)
-# 
-# shellfish <- list(crab,prawn)
-# 
-# for i to length(shellfish){
-#   fish <- as.data.frame(shellfish[i])
-#   # Select data for years 2011 to 2016
-#   fish <- filter( fish, year > 2010)
-#   fish %>% 
-#     group_by(year) %>% 
-#     unique(fish$cfv)
-#     df <- ddply(fish, "year", summarise, 
-#                           fishEvents = nrow(ID),
-#                           noVessels = length(unique(cfv)))
-#   yr <- length(unique(fish$year))
-#   cfv <- length(unique(fish$cfv))
-#   # count number of rows
-#   rcrds <- nrow(fish)
-# }
-# 
-# ### Number of Trips per year
-# yr <- length(unique(prawn$year))
-# yr
-# 
-# ### Number of Vessels per year
-# cfv <- length(unique(crab$cfv))

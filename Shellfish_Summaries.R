@@ -24,7 +24,7 @@
 rm(list=ls())
 
 getwd()
-setwd("C:/Users/daviessa/Documents/R/MY_PROJECTS/SoG Sponge Reef 2018")
+setwd("~/R/MY_PROJECTS/SoG_Sponge_Reef_2018")
 
 Sys.getenv("R_ARCH")   
 # "/i386" 32 bit R --- which is necessary to grab data from MS Access database
@@ -46,8 +46,7 @@ UsePackages <- function( pkgs, update=FALSE, locn="http://cran.rstudio.com/" ) {
 }  # End UsePackages function
 
 # Make packages available
-UsePackages( pkgs=c("rgdal","sp", "dplyr", "maptools","spatialEco","data.table") ) 
-
+UsePackages( pkgs=c("rgdal","sp","rgeos","dplyr", "maptools","spatialEco","data.table") ) 
 
 # Read in South Coast water shapefile
 reefs <- readOGR("F:/GIS/Requests 2018/SoG Sponge reefs/SHP/Background_lyrs","SoG_all_reefs")
@@ -57,8 +56,9 @@ reef.crs <- proj4string(reefs)
 # Parameters for each fishery
 fisheries <- c( "Crab","Prawn","Shrimp_trawl" )
 path <- "F:/GIS/Requests 2018/SoG Sponge reefs/SHP/FE"
-dsn <- "F:/GIS/Requests 2018/SoG Sponge reefs/SHP/FE_byReef"
+#dsn <- "F:/GIS/Requests 2018/SoG Sponge reefs/SHP/FE_byReef"
 
+i <- 2
 
 for (i in 1:length(fisheries)){
   # Select fishery
@@ -76,6 +76,10 @@ for (i in 1:length(fisheries)){
   new.pts <- new.pts[!is.na(new.pts$Reef),]
   plot(reefs)
   points(new.pts, col="blue")
+  # Buffer the point to represent the area of a fishing event
+  new.poly <- gBuffer( new.pts, width=5.6, byid=FALSE )
+  # Clip
+  new.poly <- gIntersection(new.poly, reefs)
   # Save work as shp, rds, & csv
   lyrName <- paste(fishery, "_reefs", sep="")
   # Save as a new shapefile
@@ -93,3 +97,12 @@ for (i in 1:length(fisheries)){
   filename <- paste(dsn,"/",lyrName,"_pivotTbl.csv", sep="")
   write.csv(pvTbl, file=filename, row.names=TRUE ) 
 }
+
+
+gClip <- function(shp, bb){
+  if(class(bb) == "matrix") b_poly <- as(extent(as.vector(t(bb))), "SpatialPolygons")
+  else b_poly <- as(extent(bb), "SpatialPolygons")
+  gIntersection(shp, b_poly, byid = T)
+}
+
+zones_clipped <- gClip(new.poly, reefs)
